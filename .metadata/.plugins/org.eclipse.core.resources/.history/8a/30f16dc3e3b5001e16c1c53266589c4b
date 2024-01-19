@@ -1,0 +1,52 @@
+package lm.swith.user.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import lm.swith.user.mapper.UsersMapper;
+import lm.swith.user.model.SwithUser;
+import lombok.RequiredArgsConstructor;
+
+@Configuration
+@Service
+@RequiredArgsConstructor
+public class UserSecurityService implements UserDetailsService{
+	
+	private final UsersMapper usersMapper;
+	
+	public UserDetails loadUserByUsername (String email) throws UsernameNotFoundException{
+		SwithUser _siteUser = usersMapper.secUser(email);
+		if(_siteUser == null) {
+			System.out.println("실패 : " + _siteUser);
+			throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+		}
+		
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		System.out.println("성공 : " + _siteUser.getEmail()); //만약에 admin id(이메일)로 로그인이 
+		
+		if("ROLE_ADMIN".equals(_siteUser.getRole())) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}else {
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+		}
+		return new User(_siteUser.getEmail(),_siteUser.getPassword(),authorities);
+		}
+
+
+	
+
+	
+
+	
+	
+
+}

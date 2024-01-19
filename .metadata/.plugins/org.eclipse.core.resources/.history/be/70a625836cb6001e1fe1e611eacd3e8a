@@ -1,0 +1,103 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "lm.swith.main.mapper.StudyPostMapper">
+	<!-- 스터디 전체 목록 -->
+	<select id="getAllStudyPost" parameterType="lm.swith.main.vo.StudyPost">
+		SELECT * FROM study_post ORDER BY post_no DESC
+	</select>
+	
+	<!-- 스터디 상세 페이지 -->
+	<select id="getStudyByStudyNo" parameterType="lm.swith.main.vo.StudyPost">
+		SELECT * FROM study_post WHERE post_no = #{post_no}
+	</select>
+	
+	<!-- 스터디 등록 -->
+	<insert id="insertStudyPost" parameterType="lm.swith.main.vo.StudyPost">
+	    <selectKey keyProperty="post_no" resultType="java.lang.Long" order="BEFORE">
+	        SELECT post_no_seq.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO study_post (
+	        POST_NO, USER_NO, STUDY_TITLE, STUDY_CONTENT,
+	        STUDY_METHOD, RECRUIT_TYPE, STUDY_PERIOD,
+	        STUDY_START, RECRUIT_DEADLINE, STUDY_STATUS,
+	        STUDY_LIKES, STUDY_LOCATION, STUDY_PLACE, STUDY_POST_TIME
+	    ) VALUES (
+	        #{post_no}, #{user_no}, #{study_title}, #{study_content},
+	        #{study_method}, #{recruit_type}, #{study_period},
+	        #{study_start}, #{recruit_deadline}, #{study_status},
+	        #{study_likes}, #{study_location}, #{study_place}, SYSDATE
+	    )
+	</insert>
+	
+	
+	<!-- 조건 select 문 parameterType="Map" -->
+	<select id="getStudiesbySelect" parameterType="String" resultType="lm.swith.main.vo.StudyPost">
+    SELECT DISTINCT *
+    FROM (
+        <!-- 기술스택별 스터디 목록 -->
+        SELECT sp.*
+        FROM study_post sp
+        JOIN post_tech_stacks pts ON sp.post_no = pts.post_no
+        WHERE pts.skill_no = #{skill_no}
+
+        UNION
+
+        <!-- 모집구분별 스터디 목록 -->
+        SELECT *
+        FROM study_post
+        WHERE recruit_type = #{recruit_type}
+
+        UNION
+
+        <!-- 진행방식별 스터디 목록 -->
+        SELECT *
+        FROM study_post
+        WHERE study_method = #{study_method}
+
+        UNION
+
+        <!-- 지역별 스터디 목록 -->
+        SELECT *
+        FROM study_post 
+        WHERE study_location = #{study_location}
+    ) AS uniqueStudies
+	</select>
+	
+	
+	
+	<!-- 키워드 검색결과 스터디 목록 -->
+	<select id="getStudiesByKeyword">
+	    SELECT * FROM study_post 
+	    WHERE study_title LIKE '%' || #{keyword} || '%'
+	    OR study_content LIKE '%' || #{keyword}|| '%'
+	</select>
+	
+	
+	<!-- 스터디 수정 -->
+	<update id="updateStudyPost" parameterType="lm.swith.main.vo.StudyPost">
+		UPDATE study_post SET
+		study_title = #{study_title},
+		study_content = #{study_content},
+		study_method = #{study_method},
+		recruit_type = #{recruit_type},
+		study_period = #{study_period},
+		study_start = #{study_start},
+		recruit_deadline = #{recruit_deadline},
+		study_location = #{study_location},
+		study_place = #{study_place}
+		WHERE post_no = #{post_no}
+	</update>
+	
+	
+	<!-- 스터디 삭제 -->
+	<delete id="deleteStudyPost" parameterType="Long">
+		DELETE FROM study_post WHERE post_no = #{post_no}
+	</delete>
+</mapper>
+
+
+
+
+
+
+

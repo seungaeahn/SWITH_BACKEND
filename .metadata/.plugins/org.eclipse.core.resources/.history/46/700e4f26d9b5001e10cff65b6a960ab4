@@ -1,0 +1,5 @@
+package lm.swith.user.config;
+
+public class SecurityConfig {
+
+}

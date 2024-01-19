@@ -1,0 +1,10 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "lm.swith.main.mapper.StudyPostMapper">
+	<!-- 스터디 전체 목록 -->
+	<select id="getAllStudyPost" parameterType="lm.swith.main.vo.StudyPost">
+		SELECT * FROM study_post ORDER BY post_no DESC
+	</select>
+	
+	
+</mapper>
