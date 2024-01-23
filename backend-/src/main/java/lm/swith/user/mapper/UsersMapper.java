@@ -10,13 +10,17 @@ import lm.swith.user.model.SwithUser;
 public interface UsersMapper {
 	void insertUser(SwithUser swithUser);
 	
-	SwithUser loginUser(String email, String password);
 	
 	SwithUser findUserRole(String role);
 	
-	SwithUser secUser(String email);
 	
 	List<SwithUser> findUsersAll();
+	
+	SwithUser findByEmail(String email);
+	
+	Boolean existsByEmail(String email);
+
+	SwithUser findByEmailAndPassword(String email, String password);
 	
 
 }

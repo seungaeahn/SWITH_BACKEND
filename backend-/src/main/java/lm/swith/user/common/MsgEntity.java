@@ -1,6 +1,5 @@
 package lm.swith.user.common;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;

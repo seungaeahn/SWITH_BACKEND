@@ -4,17 +4,17 @@
 <mapper namespace="lm.swith.user.mapper.UsersMapper">
 	<!-- 회원등록 -->
 	<insert id ="insertUser" parameterType="lm.swith.user.model.SwithUser">
-		INSERT INTO USERS (EMAIL, PASSWORD, USER_NAME, NICKNAME, USER_PROFILE, USER_ADDRESS, USER_INTRODUCTION, USER_ROLE)
+		INSERT INTO USERS (EMAIL, PASSWORD, USERNAME, NICKNAME, USER_PROFILE, USER_ADDRESS, USER_INTRODUCTION, USER_ROLE)
 		VALUES(#{email}, #{password}, #{username}, #{nickname}, #{userprofile}, #{useraddress}, #{userintroduction}, #{role})
 	</insert>
 	
 	
-	<select id="secUser" parameterType="String" resultType="lm.swith.user.model.SwithUser">
-        SELECT * FROM Users WHERE email = #{email}
+	<select id="findByEmail" parameterType="lm.swith.user.model.SwithUser">
+        SELECT * FROM Users WHERE EMAIL = #{email}
     </select>
 	
 	
-	<select id ="loginUser" parameterType="lm.swith.user.model.SwithUser">
+	<select id ="findByEmailAndPassword" parameterType="lm.swith.user.model.SwithUser">
 	SELECT * FROM Users WHERE email = #{email} AND PASSWORD = #{password}
 	</select>
 	
