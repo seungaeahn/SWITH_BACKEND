@@ -1,0 +1,13 @@
+package lm.swith.main.model;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class Cafes {
+	private String BPLCNM;
+	private String SITEWHLADDR;
+	private String X;
+	private String Y;
+
+}

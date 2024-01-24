@@ -5,9 +5,6 @@
 
 
 	<!-- 스터디 전체 목록 -->
-	<!-- 스터디 포스트 및 기술 스택 정보 조회 -->
-
-	
 	<!-- 스터디 포스트 및 기술 스택 정보 조회 -->	
     <resultMap type="lm.swith.main.model.Skill" id="SkillResult">
         <id property="skill_no" column="skill_no"/>
@@ -19,10 +16,22 @@
         <result property="post_no" column="POST_NO" />
         <result property="skill_no" column="SKILL_NO" />
     </resultMap>
+    
+    <resultMap type="lm.swith.main.model.Users" id="UsersResult">
+    	<id property="user_no" column="user_no" />
+    	<result property="email" column="email" />
+    	<result property="nickname" column="nickname" />
+    	<result property="user_password" column="user_password" />
+    	<result property="user_name" column="user_name" />
+    	<result property="user_profile" column="user_profile" />
+    	<result property="user_introduction" column="user_introduction" />
+    	<result property="user_role" column="user_role" />
+    </resultMap>
 
     <resultMap type="lm.swith.main.model.StudyPost" id="studyPostWithSkills">
         <id property="post_no" column="POST_NO" />
         <result property="user_no" column="USER_NO" />
+        <result property="nickname" column="NICKNAME" />
         <result property="study_title" column="STUDY_TITLE" />
         <result property="study_content" column="STUDY_CONTENT" />
         <result property="study_method" column="STUDY_METHOD" />
@@ -33,17 +42,26 @@
         <result property="study_likes" column="STUDY_LIKES" />
         <result property="study_place" column="STUDY_PLACE" />
         <result property="study_post_time" column="STUDY_POST_TIME" />
+        <association property="user" resultMap="UsersResult"/>
         <collection property="studyPostWithSkills" resultMap="SkillResult"/>
     </resultMap>
+    
+    <resultMap type="lm.swith.main.model.Cafes" id="findCafesAll">
+    	<result property="bplcm" column="BPLCNM" />
+    	<result property="sitewhladdr" column="SITEWHLADDR" />
+    	<result property="x" column="X" />
+    	<result property="y" column="Y" />
+	</resultMap>
 
-    <select id="getAllStudyPostWithSkills" resultMap="studyPostWithSkills">
-        SELECT sp.*, s.skill_name, s.skill_img
-        FROM STUDY_POST sp
-        LEFT JOIN post_tech_stacks pts ON sp.post_no = pts.post_no
-        LEFT JOIN skill s ON pts.skill_no = s.skill_no
-    </select>
+	<select id="getAllStudyPostWithSkills" resultMap="studyPostWithSkills">
+	    SELECT sp.*, s.skill_name, s.skill_img, u.email as USER_EMAIL, u.nickname as USER_NICKNAME
+	    FROM STUDY_POST sp
+	    LEFT JOIN post_tech_stacks pts ON sp.post_no = pts.post_no
+	    LEFT JOIN skill s ON pts.skill_no = s.skill_no
+	    LEFT JOIN users u ON sp.user_no = u.user_no
+	</select>
+
 	
-
 	
 	
 	<!-- 스터디 상세 페이지 -->
@@ -156,7 +174,8 @@
 	        STUDY_LOCATION = #{study_location},
 	        STUDY_PLACE = #{study_place},
 	        STUDY_POST_TIME = SYSDATE
-	    WHERE POST_NO = #{post_no};
+	    WHERE POST_NO = #{post_no} AND USER_NO = #{user_no};
+	    
 	
 	    <!-- 두 번째 쿼리: 기술 스택 정보 업데이트 기존 스킬 정보를 삭제 후 다시 저장 -->
 	    DELETE FROM post_tech_stacks WHERE post_no = #{post_no};
@@ -170,18 +189,41 @@
 	    WHERE sp.post_no = #{post_no};-->
 	</update>
 
-		
-	
-	
+
+
 	<!-- 스터디 삭제 -->
 	<delete id="deleteStudyPost" parameterType="Long">
 	    <!-- 첫 번째 쿼리: study_post 테이블에서 해당 post_no에 대한 스터디 정보 삭제 -->
-	    DELETE FROM study_post WHERE post_no = #{post_no}
+	    DELETE FROM study_post WHERE post_no = #{post_no} AND user_no = #{user_no};
 	    
 	    <!-- 두 번째 쿼리: post_tech_stacks 테이블에서 해당 post_no에 대한 기술 스택 정보 삭제 -->
 	    DELETE FROM post_tech_stacks WHERE post_no = #{post_no}
 	</delete>
+	
+	
+	<!-- 게시글 작성시 카페 목록 검색 -->
+	<select id="searchCafes" resultType="lm.swith.main.model.Cafes">
+	    SELECT * FROM cafes 
+	    WHERE bplcnm LIKE '%' || #{keyword} || '%'
+	    OR sitewhladdr LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	<!-- 카페목록 모두 가져오기 -->
+	<select id="getAllCafes" resultType="lm.swith.main.model.Cafes">
+	    SELECT * FROM CAFES 
+	</select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,8 @@
 package lm.swith.main.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lm.swith.main.model.Cafes;
 import lm.swith.main.model.StudyPost;
 import lm.swith.main.service.StudyPostService;
 
@@ -96,5 +99,18 @@ public class StudyPostController {
     	List<StudyPost> studyPosts = studyPostService.getStudiesByKeyword(study_title, study_content);
     	model.addAttribute("studyPosts", studyPosts);
     	return "/";
+    }
+    
+ // 스터디 목록
+    @GetMapping ("/cafe_list")
+    public ResponseEntity<List<Cafes>> getAllCafes(String bplcnm, String sitewhladdr, String x, String y) {
+        List<Cafes> cafes = studyPostService.getAllCafes(bplcnm, sitewhladdr, x, y);
+        return ResponseEntity.ok(cafes);
+    }
+    
+ // 검색 카페 목록
+    @GetMapping("/KeywordCafes")
+    public List<Cafes> searchCafes(@RequestParam String keyword) {
+        return studyPostService.searchCafes(keyword);
     }
 }

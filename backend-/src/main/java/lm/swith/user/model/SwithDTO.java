@@ -19,4 +19,6 @@ public class SwithDTO {
 	private String username;
 	private String password;
 	private Long user_no;
+	private String useraddress;
+	private String nickname;
 }

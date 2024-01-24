@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import lm.swith.main.model.Cafes;
 import lm.swith.main.model.StudyPost;
 
 
@@ -31,5 +32,12 @@ public interface StudyPostMapper {
 		
 	// 스터디 제목+내용 검색
 	List<StudyPost> getStudiesBySearch(String study_title, String study_content);
+	
+	// 카페 목록
+	List<Cafes> getAllCafes(String bplcnm, String sitewhladdr, String x, String y);
+		
+	
+	//카페 검색
+	List<Cafes> searchCafes(String keyword);
 	
 }
